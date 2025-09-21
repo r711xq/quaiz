@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار قواعد اللغة الإنجليزية</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #5a6268;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --light-bg: #f8f9fa;
+            --white-color: #fff;
+            --dark-text: #212529;
+            --border-color: #dee2e6;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #e9ecef;
+            color: var(--dark-text);
+            margin: 0;
+            padding: 10px;
+            line-height: 1.6;
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--white-color);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        h1, h2, h3 { text-align: center; color: var(--primary-color); }
+        h1 { font-size: 1.8em; margin-bottom: 25px; }
+        h2 { 
+            font-size: 1.5em; 
+            border-bottom: 2px solid var(--border-color); 
+            padding-bottom: 10px; 
+            margin-top: 40px;
+            direction: ltr;
+            text-align: left;
+        }
+        .question-block {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--secondary-color);
+            border-radius: 8px;
+            direction: ltr;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .action-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--white-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        #submitBtn { background-color: var(--success-color); }
+        #printBtn, #explanationBtn { width: 49%; display: inline-block; }
+        #printBtn { background-color: var(--primary-color); }
+        #explanationBtn { background-color: var(--secondary-color); }
+        
+        .result { text-align: center; font-size: 1.4em; font-weight: 700; margin-top: 30px; padding: 20px; border-radius: 8px; }
+        .question-block.correct { border-left-color: var(--success-color); }
+        .question-block.incorrect { border-left-color: var(--danger-color); }
+        label.user-answer-correct { background-color: #d1e7dd; border-color: var(--success-color); }
+        label.user-answer-incorrect { background-color: #f8d7da; border-color: var(--danger-color); }
+        label.correct-answer { background-color: #cff4fc; border-color: #0c5460; }
+        
+        #explanation-section { margin-top: 30px; padding: 20px; background-color: var(--light-bg); border-radius: 10px; direction: rtl; }
+        #explanation-section h3 { color: var(--primary-color); border-bottom: 2px solid #ccc; padding-bottom: 10px; text-align: right; }
+        .explanation-group { margin-bottom: 25px; }
+        .explanation-item { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #ccc; }
+        .explanation-item p { margin: 5px 0; }
+        .explanation-item .q-text { font-weight: bold; direction: ltr; text-align: left; }
+
+        .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); color: #888; font-size: 0.9em; direction: ltr; }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: var(--white-color);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+        }
+        .modal-content h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .modal-content p {
+            margin: 15px 0;
+        }
+        .modal-content button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            background: var(--primary-color);
+            color: var(--white-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal -->
+    <div id="welcomeModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>مرحبًا بك في اختبار القواعد</h3>
+            <p>تم إعداد هذا الاختبار كمبادرة من الطالب: <strong>ريان المالكي</strong>.</p>
+            <p><strong>تنويه:</strong> هذا الاختبار هو أداة مساعدة للمراجعة والتأسيس في قواعد اللغة الإنجليزية، ولا يعتبر جزءًا رسميًا من مواد الجامعة السعودية الإلكترونية.</p>
+            <button id="closeModalBtn">موافق، ابدأ الاختبار</button>
+        </div>
+    </div>
+
+    <div class="quiz-container">
+        <h1>اختبار قواعد اللغة الإنجليزية</h1>
+        <form id="quizForm"></form>
+        <button id="submitBtn" class="action-btn">عرض النتيجة</button>
+        <div id="result-container" style="display: none;">
+            <div id="result" class="result"></div>
+            <button id="printBtn" class="action-btn">طباعة</button>
+            <button id="explanationBtn" class="action-btn">شرح الإجابات</button>
+        </div>
+        <div id="explanation-section" style="display: none;"></div>
+        <footer class="footer">
+            <p>&copy; 2025 Programmed by: Rayan Al-Malki</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const quizData = [
+                { group: "Present Simple", question: "1. She always _____ her homework after school.", options: ["do", "does", "doing", "did"], answer: "does", explanation: "لأن الفاعل هو 'She' (مفرد)، نستخدم الفعل مضافًا إليه 'es' في زمن المضارع البسيط للتعبير عن عادة متكررة." },
+                { group: "Present Simple", question: "2. We _____ to music in the car.", options: ["listen", "listens", "listening", "listened"], answer: "listen", explanation: "لأن الفاعل هو 'We' (جمع)، نستخدم الفعل في صيغته الأساسية (المصدر) في المضارع البسيط." },
+                { group: "Present Simple", question: "3. The baby _____ a lot at night.", options: ["cry", "cries", "crying", "cried"], answer: "cries", explanation: "كلمة 'The baby' (مفرد) تعادل 'he' أو 'she'، لذا نضيف 's' للفعل (مع تحويل y إلى ies)." },
+                { group: "Present Simple", question: "4. My friends _____ in London.", options: ["live", "lives", "living", "lived"], answer: "live", explanation: "كلمة 'My friends' (جمع) تعادل 'they'، لذا يبقى الفعل في مصدره." },
+                { group: "Present Simple", question: "5. It _____ a lot in winter.", options: ["rain", "rains", "raining", "rained"], answer: "rains", explanation: "مع الفاعل 'It' (لغير العاقل)، نضيف 's' للفعل في المضارع البسيط." },
+                { group: "Present Simple", question: "6. He _____ to school by bike.", options: ["go", "goes", "going", "gone"], answer: "goes", explanation: "مع الفاعل 'He'، نضيف 'es' للفعل 'go' ليصبح 'goes'." },
+                { group: "Present Simple", question: "7. _____ she read books every day?", options: ["Do", "Does", "Is", "Are"], answer: "Does", explanation: "في الأسئلة مع 'he', 'she', 'it' في المضارع البسيط، نستخدم الفعل المساعد 'Does'." },
+                { group: "Present Simple", question: "8. I _____ like cold weather.", options: ["don't", "doesn't", "am not", "isn't"], answer: "don't", explanation: "للنفي مع الفاعل 'I' في المضارع البسيط، نستخدم 'do not' أو اختصارها 'don't'." },
+                { group: "Present Simple", question: "9. You always _____ your phone at home!", options: ["forget", "forgets", "forgetting", "forgot"], answer: "forget", explanation: "مع الفاعل 'You'، يبقى الفعل في مصدره في المضارع البسيط." },
+                { group: "Present Simple", question: "10. My cat _____ milk every morning.", options: ["drink", "drinks", "drinking", "drank"], answer: "drinks", explanation: "'My cat' (مفرد) تعادل 'it'، لذا نضيف 's' للفعل." },
+                { group: "Wishes (Past Tense)", question: "11. I wish I _____ more time to study.", options: ["have", "had", "has", "having"], answer: "had", explanation: "للتعبير عن تمني شيء غير حقيقي في الحاضر، نستخدم صيغة الماضي البسيط بعد 'wish'. الماضي من 'have' هو 'had'." },
+                { group: "Wishes (Past Tense)", question: "12. She wishes she _____ English every day.", options: ["study", "studied", "studies", "studying"], answer: "studied", explanation: "بعد 'wishes'، نستخدم صيغة الماضي البسيط للتعبير عن التمني. الماضي من 'study' هو 'studied'." },
+                { group: "Wishes (Past Tense)", question: "13. We wish we _____ our homework earlier.", options: ["finish", "finishes", "finished", "finishing"], answer: "finished", explanation: "نستخدم صيغة الماضي البسيط 'finished' بعد 'wish' للتعبير عن تمني في الحاضر." },
+                { group: "Wishes (Past Tense)", question: "14. He wishes he _____ the window.", options: ["open", "opened", "opens", "opening"], answer: "opened", explanation: "الماضي البسيط من 'open' هو 'opened' ويستخدم بعد 'wishes'." },
+                { group: "Wishes (Past Tense)", question: "15. I wish I _____ her yesterday.", options: ["call", "called", "calling", "calls"], answer: "called", explanation: "للتعبير عن أمنية في الحاضر، نستخدم الماضي البسيط 'called'." },
+                { group: "Wishes (Past Tense)", question: "16. They wish they _____ the truth.", options: ["know", "knew", "knowing", "knows"], answer: "knew", explanation: "الفعل 'know' شاذ، والماضي البسيط منه هو 'knew'." },
+                { group: "Wishes (Past Tense)", question: "17. She wishes she _____ with us.", options: ["work", "worked", "working", "works"], answer: "worked", explanation: "الماضي البسيط من 'work' هو 'worked' ويأتي بعد 'wishes'." },
+                { group: "Past Progressive", question: "18. She ___ when the phone rang.", options: ["was sleeping", "is sleeping", "slept", "sleep"], answer: "was sleeping", explanation: "نستخدم الماضي المستمر (was sleeping) لوصف حدث كان مستمرًا عندما قطعه حدث آخر في الماضي البسيط (rang)." },
+                { group: "Past Progressive", question: "19. We ___ dinner at 8 p.m. yesterday.", options: ["have", "were having", "was having", "had"], answer: "were having", explanation: "لوصف حدث كان مستمرًا في وقت محدد في الماضي (at 8 p.m. yesterday)." },
+                { group: "Past Progressive", question: "20. I ___ TV while my sister was studying.", options: ["watches", "was watching", "watched", "watching"], answer: "was watching", explanation: "لوصف حدثين كانا مستمرين في نفس الوقت في الماضي." },
+                { group: "Past Progressive", question: "21. They ___ in the park when it started to rain.", options: ["were walking", "are walking", "walked", "walks"], answer: "were walking", explanation: "الحدث المستمر (المشي) يُعبر عنه بالماضي المستمر، والحدث القاطع (بدء المطر) بالماضي البسيط." },
+                { group: "Past Progressive", question: "22. He ___ when I saw him.", options: ["running", "run", "was running", "is running"], answer: "was running", explanation: "وصف حالة شخص كانت مستمرة (الركض) في لحظة رؤيته." },
+                { group: "Past Progressive", question: "23. What ___ you ___ at 7 p.m. last night?", options: ["did / do", "are / doing", "were / doing", "was / do"], answer: "were / doing", explanation: "للسؤال عن فعل كان مستمرًا في وقت محدد بالماضي، نستخدم (were + الفاعل + فعل-ing)." },
+                { group: "Past Progressive", question: "24. The students ___ quietly during the exam.", options: ["are writing", "writes", "were writing", "wrote"], answer: "were writing", explanation: "وصف فعل كان مستمرًا طوال فترة زمنية محددة في الماضي (during the exam)." },
+                { group: "Past Progressive", question: "25. My mom ___ the dishes when the power went out.", options: ["did", "was doing", "doing", "do"], answer: "was doing", explanation: "الحدث المستمر (غسل الصحون) يُعبر عنه بالماضي المستمر." },
+                { group: "Past Progressive", question: "26. While we ___, our friends were playing outside.", options: ["study", "studied", "were studying", "are studying"], answer: "were studying", explanation: "فعلان مستمران يحدثان في نفس الوقت في الماضي." },
+                { group: "Past Progressive", question: "27. I ___ to music and didn’t hear you.", options: ["was listening", "listen", "listened", "am listening"], answer: "was listening", explanation: "الحدث المستمر (الاستماع للموسيقى) هو سبب عدم سماعك للحدث الآخر." },
+                { group: "Simple Past (did/didn't)", question: "28. She ___ her homework last night.", options: ["finish", "finished", "finishing", "finishes"], answer: "finished", explanation: "لوصف حدث انتهى في الماضي (last night)، نستخدم صيغة الماضي البسيط." },
+                { group: "Simple Past (did/didn't)", question: "29. They ___ the movie yesterday.", options: ["watch", "watching", "watched", "watches"], answer: "watched", explanation: "حدث منتهي في الماضي، نستخدم التصريف الثاني للفعل 'watch'." },
+                { group: "Simple Past (did/didn't)", question: "30. He ___ to his friend about the problem.", options: ["talk", "talked", "talks", "talking"], answer: "talked", explanation: "فعل منتظم في الماضي البسيط، نضيف 'ed'." },
+                { group: "Simple Past (did/didn't)", question: "31. I ___ my room in the morning.", options: ["cleaned", "clean", "cleaning", "cleans"], answer: "cleaned", explanation: "فعل مكتمل في الماضي، نستخدم 'cleaned'." },
+                { group: "Simple Past (did/didn't)", question: "32. We ___ the door before we left.", options: ["locked", "locking", "locks", "lock"], answer: "locked", explanation: "فعل منتظم في الماضي البسيط، نضيف 'ed'." },
+                { group: "Simple Past (did/didn't)", question: "33. The baby ___ loudly at night.", options: ["cry", "cries", "crying", "cried"], answer: "cried", explanation: "الماضي من 'cry' هو 'cried'." },
+                { group: "Simple Past (did/didn't)", question: "34. She didn’t ___ the gift.", options: ["accepted", "accepting", "accept", "accepts"], answer: "accept", explanation: "القاعدة الأهم: بعد 'didn't' للنفي، يعود الفعل دائمًا إلى صيغته الأساسية (المصدر)." },
+                { group: "Simple Past (did/didn't)", question: "35. Did he ___ his mistake?", options: ["admitted", "admitting", "admits", "admit"], answer: "admit", explanation: "بعد 'Did' في السؤال، يجب أن يعود الفعل الرئيسي إلى صيغته الأساسية (المصدر)." },
+                { group: "Simple Past (did/didn't)", question: "36. I didn’t ___ the question.", options: ["repeat", "repeats", "repeated", "repeating"], answer: "repeat", explanation: "بعد 'didn't'، نستخدم الفعل في المصدر 'repeat'." },
+                { group: "Simple Past (did/didn't)", question: "37. Did they ___ to music yesterday?", options: ["listened", "listens", "listening", "listen"], answer: "listen", explanation: "بعد 'Did' في السؤال، نستخدم الفعل في المصدر 'listen'." }
+            ];
+
+            const quizForm = document.getElementById('quizForm');
+            const welcomeModal = document.getElementById('welcomeModal');
+            
+            document.getElementById('closeModalBtn').addEventListener('click', () => {
+                welcomeModal.style.display = 'none';
+            });
+
+            let currentGroup = "";
+            quizData.forEach((q, index) => {
+                if (q.group !== currentGroup) {
+                    currentGroup = q.group;
+                    const groupHeader = document.createElement('h2');
+                    groupHeader.textContent = currentGroup;
+                    quizForm.appendChild(groupHeader);
+                }
+                const questionBlock = document.createElement('div');
+                questionBlock.className = 'question-block';
+                questionBlock.id = `q-block-${index}`;
+                const questionText = document.createElement('p');
+                questionText.className = 'question-text';
+                questionText.textContent = q.question;
+                questionBlock.appendChild(questionText);
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options';
+                q.options.forEach(option => {
+                    const label = document.createElement('label');
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `question${index}`;
+                    radio.value = option;
+                    const uniqueId = `q${index}_${option.replace(/[^a-zA-Z0-9]/g, "")}`;
+                    radio.id = uniqueId;
+                    label.setAttribute('for', uniqueId);
+                    label.appendChild(radio);
+                    label.append(` ${option}`);
+                    optionsDiv.appendChild(label);
+                });
+                questionBlock.appendChild(optionsDiv);
+                quizForm.appendChild(questionBlock);
+            });
+
+            function submitQuiz() {
+                let score = 0;
+                quizData.forEach((q, index) => {
+                    const questionBlock = document.getElementById(`q-block-${index}`);
+                    const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                    
+                    Array.from(questionBlock.querySelectorAll('label')).forEach(l => l.classList.remove('user-answer-correct', 'user-answer-incorrect', 'correct-answer'));
+
+                    if (selectedOption) {
+                        if (selectedOption.value === q.answer) {
+                            score++;
+                            selectedOption.parentElement.classList.add('user-answer-correct');
+                        } else {
+                            selectedOption.parentElement.classList.add('user-answer-incorrect');
+                            const correctLabelId = `q${index}_${q.answer.replace(/[^a-zA-Z0-9]/g, "")}`;
+                            const correctLabel = document.querySelector(`label[for="${correctLabelId}"]`);
+                            if(correctLabel) correctLabel.classList.add('correct-answer');
+                        }
+                    } else {
+                         const correctLabelId = `q${index}_${q.answer.replace(/[^a-zA-Z0-9]/g, "")}`;
+                         const correctLabel = document.querySelector(`label[for="${correctLabelId}"]`);
+                         if(correctLabel) correctLabel.classList.add('correct-answer');
+                    }
+                });
+                const resultContainer = document.getElementById('result-container');
+                const resultDiv = document.getElementById('result');
+                const percentage = (score / quizData.length) * 100;
+                resultDiv.innerHTML = `نتيجتك هي: ${score} من ${quizData.length} (${percentage.toFixed(1)}%)`;
+                if (percentage >= 80) resultDiv.style.backgroundColor = '#d1e7dd';
+                else if (percentage >= 50) resultDiv.style.backgroundColor = '#fff3cd';
+                else resultDiv.style.backgroundColor = '#f8d7da';
+                
+                resultContainer.style.display = 'block';
+                document.getElementById('submitBtn').style.display = 'none';
+                window.scrollTo(0, 0);
+            }
+            
+            function showExplanations() {
+                const explanationSection = document.getElementById('explanation-section');
+                let content = `<h2>شرح مفصل للإجابات</h2>`;
+                let currentGroup = "";
+                
+                quizData.forEach(q => {
+                    if (q.group !== currentGroup) {
+                        currentGroup = q.group;
+                        content += `<h3>${currentGroup}</h3>`;
+                    }
+                    content += `
+                        <div class="explanation-item">
+                            <p class="q-text">${q.question}</p>
+                            <p><strong>الإجابة الصحيحة: ${q.answer}</strong></p>
+                            <p>الشرح: ${q.explanation}</p>
+                        </div>
+                    `;
+                });
+
+                explanationSection.innerHTML = content;
+                explanationSection.style.display = 'block';
+                document.getElementById('explanationBtn').style.display = 'none';
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+
+            document.getElementById('submitBtn').addEventListener('click', submitQuiz);
+            document.getElementById('printBtn').addEventListener('click', () => window.print());
+            document.getElementById('explanationBtn').addEventListener('click', showExplanations);
+        });
+    </script>
+</body>
+</html>
